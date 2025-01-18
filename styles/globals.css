@@ -1,0 +1,18 @@
+:root {
+  --primary-background: #1a1a2e;
+  --secondary-background: #16213e;
+  --text-color: #ffffff;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: linear-gradient(135deg, var(--primary-background), var(--secondary-background));
+  color: var(--text-color);
+}
+
+.planetary-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
