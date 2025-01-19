@@ -9,13 +9,25 @@
 <body>
     <div class="calculator">
         <h1>Planetary Hours Calculator</h1>
+        
+        <div class="input-form">
+            <div class="input-group">
+                <label for="sunrise">Sunrise Time:</label>
+                <input type="time" id="sunrise" required>
+            </div>
+            <div class="input-group">
+                <label for="sunset">Sunset Time:</label>
+                <input type="time" id="sunset" required>
+            </div>
+            <button onclick="calculateWithUserInput()">Calculate</button>
+        </div>
+
         <div class="planet-info">
             <div id="result" class="hour-display">Current Planetary Hour: </div>
             <div id="hourNumber" class="hour-display">Hour Number: </div>
             <div id="dayPhase" class="hour-display">Phase: </div>
         </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
