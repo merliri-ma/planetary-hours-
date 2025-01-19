@@ -1,39 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Enhanced Planetary Hours Calculator</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planetary Hours Calculator</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <h1>Planetary Hours Calculator</h1>
-        <form id="hoursForm">
-            <div class="input-group">
-                <label for="dateSelect">Date:</label>
-                <input type="date" id="dateSelect" required>
-            </div>
-            <div class="input-group">
-                <label for="sunrise">Sunrise Time:</label>
-                <input type="time" id="sunrise" required>
-            </div>
-            <div class="input-group">
-                <label for="sunset">Sunset Time:</label>
-                <input type="time" id="sunset" required>
-            </div>
-            <button type="submit" class="calculate-btn">Calculate</button>
-            <button type="button" class="location-btn" onclick="getCurrentLocation()">Use My Location</button>
-        </form>
-        
-        <div id="results" class="results-container"></div>
-        <canvas id="hourlyChart"></canvas>
-        
-        <div class="actions">
-            <button onclick="exportToCSV()" class="export-btn">Export Data</button>
-            <button onclick="toggleTheme()" class="theme-btn">Toggle Theme</button>
+        <div class="input-group">
+            <label for="date">Date:</label>
+            <input type="date" id="date">
         </div>
+        <div class="input-group">
+            <label for="sunrise">Sunrise:</label>
+            <input type="time" id="sunrise">
+        </div>
+        <div class="input-group">
+            <label for="sunset">Sunset:</label>
+            <input type="time" id="sunset">
+        </div>
+        <button onclick="calculateHours()">Calculate</button>
+        <div id="results"></div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
