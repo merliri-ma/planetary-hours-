@@ -44,11 +44,8 @@ input[type="time"] {
     background-color: #f9f9f9;
 }
 
-h1 {
-    color: #333;
-    text-align: center;
-}
-
-h2, h3 {
-    color: #444;
+.planet-name {
+    font-weight: bold;
+    padding: 2px 5px;
+    border-radius: 3px;
 }
