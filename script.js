@@ -1,108 +1,38 @@
-const planetaryRulers = {
-    0: ['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn'],
-    1: ['Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn', 'Sun'],
-    2: ['Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn', 'Sun', 'Moon'],
-    3: ['Mercury', 'Jupiter', 'Venus', 'Saturn', 'Sun', 'Moon', 'Mars'],
-    4: ['Jupiter', 'Venus', 'Saturn', 'Sun', 'Moon', 'Mars', 'Mercury'],
-    5: ['Venus', 'Saturn', 'Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter'],
-    6: ['Saturn', 'Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus']
-};
-
-function calculatePeriod() {
-    const period = document.getElementById('timePeriod').value;
-    const sunriseInput = document.getElementById('sunrise').value;
-    const sunsetInput = document.getElementById('sunset').value;
-    const resultsContainer = document.getElementById('results');
-    
-    if (!sunriseInput || !sunsetInput) {
-        alert('Please enter both sunrise and sunset times');
-        return;
-    }
-
-    resultsContainer.innerHTML = ''; // Clear previous results
-
-    switch(period) {
-        case 'hour':
-            displayHourResult(calculateCurrentHour(sunriseInput, sunsetInput));
-            break;
-        case 'week':
-            displayWeekResult(calculateWeek(sunriseInput, sunsetInput));
-            break;
-        case 'year':
-            displayYearResult(calculateYear(sunriseInput, sunsetInput));
-            break;
-    }
-}
-
-function calculateCurrentHour(sunrise, sunset) {
-    const now = new Date();
-    const sunriseTime = new Date(now.toDateString() + ' ' + sunrise);
-    const sunsetTime = new Date(now.toDateString() + ' ' + sunset);
-    
-    // Your existing hour calculation logic
-    return {
-        time: now,
-        planet: getPlanetaryRuler(now, sunriseTime, sunsetTime),
-        isDay: isInDaylight(now, sunriseTime, sunsetTime)
-    };
-}
-
-function calculateWeek(sunrise, sunset) {
-    const weekResults = [];
-    const today = new Date();
-    
-    for(let i = 0; i < 7; i++) {
-        const date = new Date(today);
-        date.setDate(date.getDate() + i);
-        weekResults.push({
-            date: date,
-            hours: calculateDayHours(date, sunrise, sunset)
-        });
-    }
-    return weekResults;
-}
-
-function calculateYear(sunrise, sunset) {
-    const yearResults = [];
-    const today = new Date();
-    
-    for(let i = 0; i < 365; i++) {
-        const date = new Date(today);
-        date.setDate(date.getDate() + i);
-        yearResults.push({
-            date: date,
-            summary: calculateDaySummary(date, sunrise, sunset)
-        });
-    }
-    return yearResults;
-}
-
-// Display functions for different periods
 function displayHourResult(result) {
     const resultsContainer = document.getElementById('results');
     resultsContainer.innerHTML = `
         <div class="current-hour">
-            <h3>Current Planetary Hour</h3>
-            <p>Planet: ${result.planet}</p>
-            <p>Phase: ${result.isDay ? 'Day' : 'Night'}</p>
-            <p>Time: ${result.time.toLocaleTimeString()}</p>
+            <h2>Single Hour View</h2>
+            <div class="hour-card">
+                <img src="images/icons/${result.planet.toLowerCase()}.png" alt="${result.planet}">
+                <h3>${result.planet}</h3>
+                <div class="hour-details">
+                    <p>Time: ${result.time.toLocaleTimeString()}</p>
+                    <p>Phase: ${result.isDay ? '☀️ Day' : '🌙 Night'}</p>
+                    <p>Hour Number: ${result.hourNumber}</p>
+                </div>
+            </div>
         </div>
     `;
 }
 
 function displayWeekResult(results) {
     const resultsContainer = document.getElementById('results');
-    let html = '<div class="week-view">';
+    let html = `
+        <div class="week-view">
+            <h2>Weekly Schedule</h2>
+            <div class="week-grid">
+    `;
     
     results.forEach(day => {
         html += `
-            <div class="day-card">
-                <h3>${day.date.toLocaleDateString()}</h3>
-                <div class="hours-grid">
+            <div class="day-column">
+                <h3>${day.date.toLocaleDateString('en-US', {weekday: 'long'})}</h3>
+                <div class="hours-list">
                     ${day.hours.map(hour => `
-                        <div class="hour-cell">
+                        <div class="hour-block ${hour.isDay ? 'day-hour' : 'night-hour'}">
+                            <img src="images/icons/${hour.planet.toLowerCase()}.png" alt="${hour.planet}">
                             <span>${hour.time}</span>
-                            <span>${hour.planet}</span>
                         </div>
                     `).join('')}
                 </div>
@@ -110,23 +40,44 @@ function displayWeekResult(results) {
         `;
     });
     
-    html += '</div>';
+    html += '</div></div>';
     resultsContainer.innerHTML = html;
 }
 
 function displayYearResult(results) {
     const resultsContainer = document.getElementById('results');
-    let html = '<div class="year-view">';
+    let html = `
+        <div class="year-view">
+            <h2>Yearly Overview</h2>
+            <div class="calendar-grid">
+    `;
     
+    const months = {};
     results.forEach(day => {
+        const monthKey = day.date.toLocaleString('en-US', { month: 'long' });
+        if (!months[monthKey]) {
+            months[monthKey] = [];
+        }
+        months[monthKey].push(day);
+    });
+
+    Object.entries(months).forEach(([month, days]) => {
         html += `
-            <div class="date-card">
-                <h4>${day.date.toLocaleDateString()}</h4>
-                <p>Ruling Planet: ${day.summary.rulingPlanet}</p>
+            <div class="month-card">
+                <h3>${month}</h3>
+                <div class="days-grid">
+                    ${days.map(day => `
+                        <div class="day-cell">
+                            <span class="date">${day.date.getDate()}</span>
+                            <img src="images/icons/${day.summary.rulingPlanet.toLowerCase()}.png" 
+                                 alt="${day.summary.rulingPlanet}">
+                        </div>
+                    `).join('')}
+                </div>
             </div>
         `;
     });
     
-    html += '</div>';
+    html += '</div></div>';
     resultsContainer.innerHTML = html;
 }
