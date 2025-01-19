@@ -1,12 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.querySelector('button');
     calculateButton.addEventListener('click', calculateHours);
+    console.log('Page loaded and ready');
 });
 
 function calculateHours() {
+    console.log('Calculate button clicked');
+    
     const date = document.getElementById('date').value;
     const sunrise = document.getElementById('sunrise').value;
     const sunset = document.getElementById('sunset').value;
+    
+    console.log('Input values:', { date, sunrise, sunset });
 
     if (!date || !sunrise || !sunset) {
         alert('Please fill in all fields');
@@ -15,6 +20,8 @@ function calculateHours() {
 
     const sunriseTime = new Date(`${date} ${sunrise}`);
     const sunsetTime = new Date(`${date} ${sunset}`);
+    
+    console.log('Parsed times:', { sunriseTime, sunsetTime });
 
     const dayLength = (sunsetTime - sunriseTime) / 12;
     const nightLength = (24 * 60 * 60 * 1000 - (sunsetTime - sunriseTime)) / 12;
@@ -32,14 +39,7 @@ function calculateHours() {
 
     const resultsDiv = document.getElementById('results');
     resultsDiv.innerHTML = results;
-    resultsDiv.style.display = 'block'; // Make sure results are visible
-}
-
-function getDayRulers(dateStr, planets) {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const date = new Date(dateStr);
-    const dayIndex = date.getDay();
+    resultsDiv.style.display = 'block';
     
-    const rotatedPlanets = [...planets.slice(dayIndex), ...planets.slice(0, dayIndex)];
-    return rotatedPlanets;
+    console.log('Results generated:', results);
 }
