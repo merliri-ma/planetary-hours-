@@ -1,42 +1,40 @@
-// Add this at the top of your existing script
-document.addEventListener('DOMContentLoaded', function() {
-    const controls = `
-        <div class="controls">
-            <select id="viewType" onchange="updateDisplay()">
-                <option value="current">Current Hour</option>
-                <option value="week">Week View</option>
-                <option value="year">Year View</option>
-            </select>
-        </div>
-    `;
+document.getElementById('hoursForm').addEventListener('submit', calculateHours);
+
+function calculateHours(event) {
+    event.preventDefault();
     
-    document.querySelector('.calculator').insertAdjacentHTML('afterbegin', controls);
-});
-
-function updateDisplay() {
-    const currentTime = new Date();
-    const viewType = document.getElementById('viewType').value;
-    const result = document.getElementById('result');
-
-    const mainDisplay = `
-        <div class="planetary-display">
-            <div class="time-section">
-                <h3>Current Time: ${currentTime.toLocaleTimeString()}</h3>
-                <h3>Current Date: ${currentTime.toLocaleDateString()}</h3>
-            </div>
-            <div class="sun-section">
-                <p>Sunrise: ${sunrise}</p>
-                <p>Sunset: ${sunset}</p>
-            </div>
-            <div class="hour-section">
-                <p>Day Hour Length: ${dayHourLength}</p>
-                <p>Night Hour Length: ${nightHourLength}</p>
-            </div>
-            <div class="planet-section">
-                <h2>Current Planetary Hour: ${currentPlanet}</h2>
-            </div>
-        </div>
-    `;
-
-    result.innerHTML = mainDisplay + getAdditionalView(viewType);
+    const date = document.getElementById('dateSelect').value;
+    const sunrise = document.getElementById('sunrise').value;
+    const sunset = document.getElementById('sunset').value;
+    
+    // Perform calculations
+    const results = performCalculations(sunrise, sunset);
+    
+    // Display results
+    displayResults(results);
+    
+    // Create visualization
+    createHourlyChart(results);
+    
+    // Save to local storage
+    saveCalculation(date, sunrise, sunset, results);
 }
+
+function getCurrentLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async position => {
+            const { latitude, longitude } = position.coords;
+            const times = await getSunriseSunsetTimes(latitude, longitude, new Date());
+            
+            document.getElementById('sunrise').value = times.sunrise;
+            document.getElementById('sunset').value = times.sunset;
+        });
+    }
+}
+
+function toggleTheme() {
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+}
+
+// Add other functions as needed
