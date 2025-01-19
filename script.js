@@ -32,13 +32,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const planets = ["Saturn", "Jupiter", "Mars", "Sun", "Venus", "Mercury", "Moon"];
 
     if (isDay) {
-      currentHour = (now.getTime() - sunrise.getTime()) % dayLength;
-      currentHourNumber = Math.floor(currentHour / dayHourLength);
-      currentPlanet = planets[(currentHourNumber + getDayStartingPlanet(now.getDay())) % 7];
+        currentHour = (now.getTime() - sunrise.getTime()) % dayLength;
+        currentHourNumber = Math.floor(currentHour / dayHourLength);
+        currentPlanet = planets[(currentHourNumber + getDayStartingPlanet(now.getDay())) % 7];
     } else {
-      currentHour = (now.getTime() - sunset.getTime() + nightLength) % nightLength;
-      currentHourNumber = Math.floor(currentHour / nightHourLength);
-      currentPlanet = planets[(currentHourNumber + getNightStartingPlanet(now.getDay())) % 7];
+        // Calculate night hour from sunset of the previous day
+        const previousDay = new Date(now);
+        previousDay.setDate(now.getDate() - 1);
+        const previousDaySunTimes = SunCalc.getTimes(previousDay, latitude, longitude);
+        const previousDaySunset = previousDaySunTimes.sunset;
+        currentHour = (now.getTime() - previousDaySunset.getTime() + nightLength) % nightLength;
+        currentHourNumber = Math.floor(currentHour / nightHourLength);
+        currentPlanet = planets[(currentHourNumber + getNightStartingPlanet(previousDay.getDay())) % 7];
     }
 
     function getDayStartingPlanet(dayOfWeek) {
