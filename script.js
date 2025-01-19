@@ -22,6 +22,31 @@ document.addEventListener('DOMContentLoaded', function() {
     // Calculate night hour length in milliseconds
     const nightHourLength = nightLength / 12;
 
+    // Determine if it's day or night
+    const isDay = now > sunrise && now < sunset;
+
+    // Calculate current planetary hour
+    let currentHour;
+    let currentHourNumber;
+    let currentPlanet;
+    if (isDay) {
+        currentHour = (now.getTime() - sunrise.getTime()) % dayLength;
+        currentHourNumber = Math.floor(currentHour / dayHourLength);
+    } else {
+        currentHour = (now.getTime() - sunset.getTime() + nightLength) % nightLength;
+        currentHourNumber = Math.floor(currentHour / nightHourLength);
+    }
+
+    const planets = ["Sun", "Venus", "Mercury", "Moon", "Saturn", "Jupiter", "Mars"];
+    const dayPlanetOrder = [0, 6, 5, 4, 3, 2, 1];
+    const nightPlanetOrder = [4, 3, 2, 1, 0, 6, 5];
+
+    if (isDay) {
+        currentPlanet = planets[dayPlanetOrder[currentHourNumber % 7]];
+    } else {
+        currentPlanet = planets[nightPlanetOrder[currentHourNumber % 7]];
+    }
+
     resultDiv.innerHTML = `
         <p>Current time: ${now.toLocaleTimeString()}</p>
         <p>Current date: ${now.toLocaleDateString()}</p>
@@ -29,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <p>Sunset: ${sunset.toLocaleTimeString()}</p>
         <p>Day Hour Length: ${formatTime(dayHourLength)}</p>
         <p>Night Hour Length: ${formatTime(nightHourLength)}</p>
+        <p>Current Planetary Hour: ${currentPlanet}</p>
     `;
 
     function formatTime(milliseconds) {
