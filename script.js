@@ -1,17 +1,17 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const calculateButton = document.querySelector('button');
-    calculateButton.addEventListener('click', calculateHours);
-    console.log('Page loaded and ready');
-});
+const planetColors = {
+    'Saturn': '#4A4A4A',
+    'Jupiter': '#9B59B6',
+    'Mars': '#E74C3C',
+    'Sun': '#F1C40F',
+    'Venus': '#2ECC71',
+    'Mercury': '#3498DB',
+    'Moon': '#ECF0F1'
+};
 
 function calculateHours() {
-    console.log('Calculate button clicked');
-    
     const date = document.getElementById('date').value;
     const sunrise = document.getElementById('sunrise').value;
     const sunset = document.getElementById('sunset').value;
-    
-    console.log('Input values:', { date, sunrise, sunset });
 
     if (!date || !sunrise || !sunset) {
         alert('Please fill in all fields');
@@ -20,8 +20,6 @@ function calculateHours() {
 
     const sunriseTime = new Date(`${date} ${sunrise}`);
     const sunsetTime = new Date(`${date} ${sunset}`);
-    
-    console.log('Parsed times:', { sunriseTime, sunsetTime });
 
     const dayLength = (sunsetTime - sunriseTime) / 12;
     const nightLength = (24 * 60 * 60 * 1000 - (sunsetTime - sunriseTime)) / 12;
@@ -34,12 +32,22 @@ function calculateHours() {
     
     for (let i = 0; i < 12; i++) {
         const hourStart = new Date(sunriseTime.getTime() + (dayLength * i));
-        results += `Hour ${i + 1}: ${dayRulers[i % 7]} - ${hourStart.toLocaleTimeString()}<br>`;
+        const planet = dayRulers[i % 7];
+        results += `Hour ${i + 1}: <span class="planet-name" style="color: ${planetColors[planet]}">${planet}</span> - ${hourStart.toLocaleTimeString()}<br>`;
     }
 
-    const resultsDiv = document.getElementById('results');
-    resultsDiv.innerHTML = results;
-    resultsDiv.style.display = 'block';
-    
-    console.log('Results generated:', results);
+    results += '<h3>Night Hours</h3>';
+    for (let i = 0; i < 12; i++) {
+        const hourStart = new Date(sunsetTime.getTime() + (nightLength * i));
+        const planet = dayRulers[(i + 7) % 7];
+        results += `Hour ${i + 1}: <span class="planet-name" style="color: ${planetColors[planet]}">${planet}</span> - ${hourStart.toLocaleTimeString()}<br>`;
+    }
+
+    document.getElementById('results').innerHTML = results;
+}
+
+function getDayRulers(dateStr, planets) {
+    const date = new Date(dateStr);
+    const dayIndex = date.getDay();
+    return [...planets.slice(dayIndex), ...planets.slice(0, dayIndex)];
 }
