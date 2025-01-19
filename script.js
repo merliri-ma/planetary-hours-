@@ -1,40 +1,39 @@
-document.getElementById('hoursForm').addEventListener('submit', calculateHours);
-
-function calculateHours(event) {
-    event.preventDefault();
-    
-    const date = document.getElementById('dateSelect').value;
+function calculateHours() {
+    const date = document.getElementById('date').value;
     const sunrise = document.getElementById('sunrise').value;
     const sunset = document.getElementById('sunset').value;
-    
-    // Perform calculations
-    const results = performCalculations(sunrise, sunset);
-    
-    // Display results
-    displayResults(results);
-    
-    // Create visualization
-    createHourlyChart(results);
-    
-    // Save to local storage
-    saveCalculation(date, sunrise, sunset, results);
-}
 
-function getCurrentLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(async position => {
-            const { latitude, longitude } = position.coords;
-            const times = await getSunriseSunsetTimes(latitude, longitude, new Date());
-            
-            document.getElementById('sunrise').value = times.sunrise;
-            document.getElementById('sunset').value = times.sunset;
-        });
+    if (!date || !sunrise || !sunset) {
+        alert('Please fill in all fields');
+        return;
     }
+
+    const sunriseTime = new Date(`${date} ${sunrise}`);
+    const sunsetTime = new Date(`${date} ${sunset}`);
+
+    const dayLength = (sunsetTime - sunriseTime) / 12;
+    const nightLength = (24 * 60 * 60 * 1000 - (sunsetTime - sunriseTime)) / 12;
+
+    const planets = ['Saturn', 'Jupiter', 'Mars', 'Sun', 'Venus', 'Mercury', 'Moon'];
+    const dayRulers = getDayRulers(date, planets);
+    
+    let results = '<h2>Planetary Hours</h2>';
+    results += '<h3>Day Hours</h3>';
+    
+    for (let i = 0; i < 12; i++) {
+        const hourStart = new Date(sunriseTime.getTime() + (dayLength * i));
+        results += `Hour ${i + 1}: ${dayRulers[i % 7]} - ${hourStart.toLocaleTimeString()}<br>`;
+    }
+
+    document.getElementById('results').innerHTML = results;
 }
 
-function toggleTheme() {
-    document.body.classList.toggle('dark-mode');
-    localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+function getDayRulers(dateStr, planets) {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const date = new Date(dateStr);
+    const dayIndex = date.getDay();
+    
+    const rotatedPlanets = [...planets.slice(dayIndex), ...planets.slice(0, dayIndex)];
+    return rotatedPlanets;
 }
 
-// Add other functions as needed
