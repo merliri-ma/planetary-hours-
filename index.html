@@ -1,24 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
+    <title>Enhanced Planetary Hours Calculator</title>
+    <link rel="stylesheet" href="styles.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planetary Hours Calculator</title>
-    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="calculator">
+    <div class="container">
         <h1>Planetary Hours Calculator</h1>
-        
-        <div class="view-selector">
-            <select id="viewType" onchange="switchView()">
-                <option value="hour">Current Hour</option>
-                <option value="week">Week View</option>
-                <option value="year">Year View</option>
-            </select>
-        </div>
-
-        <div class="input-form">
+        <form id="hoursForm">
+            <div class="input-group">
+                <label for="dateSelect">Date:</label>
+                <input type="date" id="dateSelect" required>
+            </div>
             <div class="input-group">
                 <label for="sunrise">Sunrise Time:</label>
                 <input type="time" id="sunrise" required>
@@ -27,15 +21,19 @@
                 <label for="sunset">Sunset Time:</label>
                 <input type="time" id="sunset" required>
             </div>
-            <button onclick="calculateView()">Calculate</button>
+            <button type="submit" class="calculate-btn">Calculate</button>
+            <button type="button" class="location-btn" onclick="getCurrentLocation()">Use My Location</button>
+        </form>
+        
+        <div id="results" class="results-container"></div>
+        <canvas id="hourlyChart"></canvas>
+        
+        <div class="actions">
+            <button onclick="exportToCSV()" class="export-btn">Export Data</button>
+            <button onclick="toggleTheme()" class="theme-btn">Toggle Theme</button>
         </div>
-
-        <div id="result" class="results-container"></div>
     </div>
-
-    <script src="views/hourView.js"></script>
-    <script src="views/weekView.js"></script>
-    <script src="views/yearView.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
