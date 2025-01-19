@@ -1,4 +1,0 @@
-fastapi
-pydantic
-pytz
-jinja2
