@@ -8,37 +8,125 @@ const planetaryRulers = {
     6: ['Saturn', 'Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus']
 };
 
-function calculateWithUserInput() {
+function calculatePeriod() {
+    const period = document.getElementById('timePeriod').value;
     const sunriseInput = document.getElementById('sunrise').value;
     const sunsetInput = document.getElementById('sunset').value;
+    const resultsContainer = document.getElementById('results');
     
     if (!sunriseInput || !sunsetInput) {
         alert('Please enter both sunrise and sunset times');
         return;
     }
 
+    resultsContainer.innerHTML = ''; // Clear previous results
+
+    switch(period) {
+        case 'hour':
+            displayHourResult(calculateCurrentHour(sunriseInput, sunsetInput));
+            break;
+        case 'week':
+            displayWeekResult(calculateWeek(sunriseInput, sunsetInput));
+            break;
+        case 'year':
+            displayYearResult(calculateYear(sunriseInput, sunsetInput));
+            break;
+    }
+}
+
+function calculateCurrentHour(sunrise, sunset) {
     const now = new Date();
-    const sunrise = new Date(now.toDateString() + ' ' + sunriseInput);
-    const sunset = new Date(now.toDateString() + ' ' + sunsetInput);
+    const sunriseTime = new Date(now.toDateString() + ' ' + sunrise);
+    const sunsetTime = new Date(now.toDateString() + ' ' + sunset);
     
-    const dayLength = sunset - sunrise;
-    const nightLength = 24 * 60 * 60 * 1000 - dayLength;
+    // Your existing hour calculation logic
+    return {
+        time: now,
+        planet: getPlanetaryRuler(now, sunriseTime, sunsetTime),
+        isDay: isInDaylight(now, sunriseTime, sunsetTime)
+    };
+}
+
+function calculateWeek(sunrise, sunset) {
+    const weekResults = [];
+    const today = new Date();
     
-    const dayHourLength = dayLength / 12;
-    const nightHourLength = nightLength / 12;
+    for(let i = 0; i < 7; i++) {
+        const date = new Date(today);
+        date.setDate(date.getDate() + i);
+        weekResults.push({
+            date: date,
+            hours: calculateDayHours(date, sunrise, sunset)
+        });
+    }
+    return weekResults;
+}
+
+function calculateYear(sunrise, sunset) {
+    const yearResults = [];
+    const today = new Date();
     
-    const isDay = now >= sunrise && now < sunset;
-    const referenceTime = isDay ? sunrise : sunset;
-    const hourLength = isDay ? dayHourLength : nightHourLength;
+    for(let i = 0; i < 365; i++) {
+        const date = new Date(today);
+        date.setDate(date.getDate() + i);
+        yearResults.push({
+            date: date,
+            summary: calculateDaySummary(date, sunrise, sunset)
+        });
+    }
+    return yearResults;
+}
+
+// Display functions for different periods
+function displayHourResult(result) {
+    const resultsContainer = document.getElementById('results');
+    resultsContainer.innerHTML = `
+        <div class="current-hour">
+            <h3>Current Planetary Hour</h3>
+            <p>Planet: ${result.planet}</p>
+            <p>Phase: ${result.isDay ? 'Day' : 'Night'}</p>
+            <p>Time: ${result.time.toLocaleTimeString()}</p>
+        </div>
+    `;
+}
+
+function displayWeekResult(results) {
+    const resultsContainer = document.getElementById('results');
+    let html = '<div class="week-view">';
     
-    const timeSinceReference = now - referenceTime;
-    const hourIndex = Math.floor(timeSinceReference / hourLength);
+    results.forEach(day => {
+        html += `
+            <div class="day-card">
+                <h3>${day.date.toLocaleDateString()}</h3>
+                <div class="hours-grid">
+                    ${day.hours.map(hour => `
+                        <div class="hour-cell">
+                            <span>${hour.time}</span>
+                            <span>${hour.planet}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    });
     
-    const dayOfWeek = now.getDay();
-    const sequence = planetaryRulers[dayOfWeek];
-    const hourRuler = sequence[hourIndex % 7];
+    html += '</div>';
+    resultsContainer.innerHTML = html;
+}
+
+function displayYearResult(results) {
+    const resultsContainer = document.getElementById('results');
+    let html = '<div class="year-view">';
     
-    document.getElementById('result').textContent = `Current Planetary Hour: ${hourRuler}`;
-    document.getElementById('hourNumber').textContent = `Hour Number: ${hourIndex + 1}`;
-    document.getElementById('dayPhase').textContent = `Phase: ${isDay ? 'Day' : 'Night'}`;
+    results.forEach(day => {
+        html += `
+            <div class="date-card">
+                <h4>${day.date.toLocaleDateString()}</h4>
+                <p>Ruling Planet: ${day.summary.rulingPlanet}</p>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    resultsContainer.innerHTML = html;
 }
