@@ -10,12 +10,11 @@
     <div class="calculator">
         <h1>Planetary Hours Calculator</h1>
         
-        <div class="period-selector">
-            <h2>Select Time Period</h2>
-            <select id="timePeriod">
+        <div class="view-selector">
+            <select id="viewType" onchange="switchView()">
                 <option value="hour">Current Hour</option>
-                <option value="week">Full Week</option>
-                <option value="year">Full Year</option>
+                <option value="week">Week View</option>
+                <option value="year">Year View</option>
             </select>
         </div>
 
@@ -28,13 +27,15 @@
                 <label for="sunset">Sunset Time:</label>
                 <input type="time" id="sunset" required>
             </div>
-            <button onclick="calculatePeriod()">Calculate</button>
+            <button onclick="calculateView()">Calculate</button>
         </div>
 
-        <div id="results" class="results-container">
-            <!-- Results will be inserted here -->
-        </div>
+        <div id="result" class="results-container"></div>
     </div>
+
+    <script src="views/hourView.js"></script>
+    <script src="views/weekView.js"></script>
+    <script src="views/yearView.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
