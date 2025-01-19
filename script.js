@@ -1,30 +1,21 @@
-// Main calculation logic and view switching
-const planetaryRulers = {
-    0: ['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn'],
-    1: ['Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn', 'Sun'],
-    2: ['Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn', 'Sun', 'Moon'],
-    3: ['Mercury', 'Jupiter', 'Venus', 'Saturn', 'Sun', 'Moon', 'Mars'],
-    4: ['Jupiter', 'Venus', 'Saturn', 'Sun', 'Moon', 'Mars', 'Mercury'],
-    5: ['Venus', 'Saturn', 'Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter'],
-    6: ['Saturn', 'Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus']
-};
-
-function calculateView() {
+// Keep your existing calculation logic and add:
+function updateDisplay() {
     const viewType = document.getElementById('viewType').value;
-    const sunrise = document.getElementById('sunrise').value;
-    const sunset = document.getElementById('sunset').value;
-    
-    switch(viewType) {
-        case 'hour':
-            displayHourView(calculateCurrentHour(sunrise, sunset));
-            break;
-        case 'week':
-            displayWeekView(calculateWeeklyHours(sunrise, sunset));
-            break;
-        case 'year':
-            displayYearView(calculateYearlyHours(sunrise, sunset));
-            break;
-    }
-}
+    const currentTime = new Date();
+    const result = document.getElementById('result');
 
-// Include all calculation functions shown previously
+    const baseInfo = `
+        <div class="time-info">
+            <h2>Current Information</h2>
+            <p>Time: ${currentTime.toLocaleTimeString()}</p>
+            <p>Date: ${currentTime.toLocaleDateString()}</p>
+            <p>Sunrise: ${sunrise}</p>
+            <p>Sunset: ${sunset}</p>
+            <p>Day Hour Length: ${dayHourLength}</p>
+            <p>Night Hour Length: ${nightHourLength}</p>
+            <p>Current Planetary Hour: ${currentPlanet}</p>
+        </div>
+    `;
+
+    result.innerHTML = baseInfo + getAdditionalView(viewType);
+}
