@@ -1,66 +1,23 @@
-:root {
-    --primary-color: #2c3e50;
-    --secondary-color: #3498db;
-    --background-color: #ffffff;
-    --text-color: #333333;
-}
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    line-height: 1.6;
-    margin: 0;
-    padding: 20px;
-}
-
 .container {
-    max-width: 800px;
+    max-width: 600px;
     margin: 0 auto;
     padding: 20px;
 }
 
 .input-group {
-    margin-bottom: 15px;
+    margin: 10px 0;
 }
 
-input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+label {
+    display: inline-block;
+    width: 100px;
 }
 
 button {
-    background-color: var(--secondary-color);
-    color: white;
+    margin: 20px 0;
     padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin: 5px;
 }
 
-.results-container {
+#results {
     margin-top: 20px;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.dark-mode {
-    --background-color: #1a1a1a;
-    --text-color: #ffffff;
-}
-
-@media (max-width: 768px) {
-    .container {
-        padding: 10px;
-    }
-    
-    button {
-        width: 100%;
-        margin: 5px 0;
-    }
 }
