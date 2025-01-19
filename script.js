@@ -29,22 +29,28 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentHour;
     let currentHourNumber;
     let currentPlanet;
+    const planets = ["Saturn", "Jupiter", "Mars", "Sun", "Venus", "Mercury", "Moon"];
+
     if (isDay) {
-        currentHour = (now.getTime() - sunrise.getTime()) % dayLength;
-        currentHourNumber = Math.floor(currentHour / dayHourLength);
+      currentHour = (now.getTime() - sunrise.getTime()) % dayLength;
+      currentHourNumber = Math.floor(currentHour / dayHourLength);
+      currentPlanet = planets[(currentHourNumber + getDayStartingPlanet(now.getDay())) % 7];
     } else {
-        currentHour = (now.getTime() - sunset.getTime() + nightLength) % nightLength;
-        currentHourNumber = Math.floor(currentHour / nightHourLength);
+      currentHour = (now.getTime() - sunset.getTime() + nightLength) % nightLength;
+      currentHourNumber = Math.floor(currentHour / nightHourLength);
+      currentPlanet = planets[(currentHourNumber + getNightStartingPlanet(now.getDay())) % 7];
     }
 
-    const planets = ["Sun", "Venus", "Mercury", "Moon", "Saturn", "Jupiter", "Mars"];
-    const dayPlanetOrder = [0, 6, 5, 4, 3, 2, 1];
-    const nightPlanetOrder = [4, 3, 2, 1, 0, 6, 5];
+    function getDayStartingPlanet(dayOfWeek) {
+        // 0 = Sunday, 1 = Monday, etc.
+        const dayPlanets = [3, 4, 5, 6, 0, 1, 2];
+        return dayPlanets[dayOfWeek];
+    }
 
-    if (isDay) {
-        currentPlanet = planets[dayPlanetOrder[currentHourNumber % 7]];
-    } else {
-        currentPlanet = planets[nightPlanetOrder[currentHourNumber % 7]];
+    function getNightStartingPlanet(dayOfWeek) {
+        // 0 = Sunday, 1 = Monday, etc.
+        const nightPlanets = [4, 5, 6, 0, 1, 2, 3];
+        return nightPlanets[dayOfWeek];
     }
 
     resultDiv.innerHTML = `
