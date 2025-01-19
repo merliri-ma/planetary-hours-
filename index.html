@@ -4,7 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Planetary Hours Calculator</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .input-group {
+            margin: 10px 0;
+        }
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+        button {
+            margin: 20px 0;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        input[type="date"],
+        input[type="time"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+        }
+        #results {
+            margin-top: 20px;
+            display: block;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        h2, h3 {
+            color: #444;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -40,6 +87,8 @@
             const sunsetTime = new Date(`${date} ${sunset}`);
 
             const dayLength = (sunsetTime - sunriseTime) / 12;
+            const nightLength = (24 * 60 * 60 * 1000 - (sunsetTime - sunriseTime)) / 12;
+
             const planets = ['Saturn', 'Jupiter', 'Mars', 'Sun', 'Venus', 'Mercury', 'Moon'];
             const dayRulers = getDayRulers(date, planets);
             
@@ -49,6 +98,12 @@
             for (let i = 0; i < 12; i++) {
                 const hourStart = new Date(sunriseTime.getTime() + (dayLength * i));
                 results += `Hour ${i + 1}: ${dayRulers[i % 7]} - ${hourStart.toLocaleTimeString()}<br>`;
+            }
+
+            results += '<h3>Night Hours</h3>';
+            for (let i = 0; i < 12; i++) {
+                const hourStart = new Date(sunsetTime.getTime() + (nightLength * i));
+                results += `Hour ${i + 1}: ${dayRulers[(i + 7) % 7]} - ${hourStart.toLocaleTimeString()}<br>`;
             }
 
             document.getElementById('results').innerHTML = results;
