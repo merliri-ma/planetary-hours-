@@ -1,3 +1,8 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const calculateButton = document.querySelector('button');
+    calculateButton.addEventListener('click', calculateHours);
+});
+
 function calculateHours() {
     const date = document.getElementById('date').value;
     const sunrise = document.getElementById('sunrise').value;
@@ -25,7 +30,9 @@ function calculateHours() {
         results += `Hour ${i + 1}: ${dayRulers[i % 7]} - ${hourStart.toLocaleTimeString()}<br>`;
     }
 
-    document.getElementById('results').innerHTML = results;
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = results;
+    resultsDiv.style.display = 'block'; // Make sure results are visible
 }
 
 function getDayRulers(dateStr, planets) {
@@ -36,4 +43,3 @@ function getDayRulers(dateStr, planets) {
     const rotatedPlanets = [...planets.slice(dayIndex), ...planets.slice(0, dayIndex)];
     return rotatedPlanets;
 }
-
